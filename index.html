@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vale Robotics 2026 | Certificado Oficial</title>
+    <title>Vale Eurobotic 2026 | Certificado Oficial</title>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -269,7 +269,7 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 8px 14px;
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         font-weight: 700;
         color: #94a3b8;
         letter-spacing: 0.5px;
@@ -284,13 +284,13 @@
     <div class="card">
       <div class="brand">
         <div class="tag-ufsc">UFSC Blumenau • Desafio Final</div>
-        <h1 class="title-main">VALEEU <span>ROBOTICS</span> 2026</h1>
+        <h1 class="title-main">VALE <span>EUROBOTIC</span> 2026</h1>
         <p class="event-desc">Emissão de Certificado</p>
       </div>
 
       <div class="event-info-strip">
         Evento Oficial: 06 de Novembro de 2026<br />
-        Local: Quadra da UFSC Blumenau • 4h Complementares
+        Local: Quadra da UFSC Blumenau • 3h Complementares
       </div>
 
       <form id="certForm">
@@ -328,6 +328,16 @@
           />
         </div>
 
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Digite seu e-mail para envio do certificado"
+            autocomplete="email"
+          />
+        </div>
+
         <button type="submit" id="btnSubmit" class="btn-emit">
           <span class="spinner" id="btnSpinner"></span>
           <span id="btnText">Gerar Certificado Oficial</span>
@@ -343,7 +353,13 @@
           <span>•</span>
           <div>SELGRON</div>
           <span>•</span>
-          <div>NEXT</div>
+          <div>NETZSCH</div>
+          <span>•</span>
+          <div>ALTONA</div>
+          <span>•</span>
+          <div>SEBRAE</div>
+          <span>•</span>
+          <div>SICOOB</div>
           <span>•</span>
           <div>PROVOLT</div>
           <span>•</span>
@@ -383,6 +399,7 @@
             nome: document.getElementById("nome").value.trim(),
             cpf: document.getElementById("cpf").value.trim(),
             matricula: document.getElementById("matricula").value.trim(),
+            email: document.getElementById("email").value.trim(),
           };
 
           try {
@@ -396,6 +413,10 @@
             const pdfDoc = await PDFLib.PDFDocument.create();
             const page = pdfDoc.addPage([841.89, 595.28]);
             const { width, height } = page.getSize();
+
+            const brasaoRes = await fetch("assets/Brasão.png");
+            const brasaoBytes = await brasaoRes.arrayBuffer();
+            const brasaoImage = await pdfDoc.embedPng(brasaoBytes);
 
             const fontBold = await pdfDoc.embedFont(
               PDFLib.StandardFonts.HelveticaBold,
@@ -505,16 +526,20 @@
               });
             };
 
+            const brasaoH = 46;
+            const brasaoScale = brasaoH / brasaoImage.height;
+            const brasaoW = brasaoImage.width * brasaoScale;
+
+            page.drawImage(brasaoImage, {
+              x: (width - brasaoW) / 2,
+              y: 494,
+              width: brasaoW,
+              height: brasaoH,
+            });
+
             drawCentered(
-              "UNIVERSIDADE FEDERAL DE SANTA CATARINA — UFSC BLUMENAU",
-              518,
-              11,
-              fontBold,
-              cNavyDark,
-            );
-            drawCentered(
-              "VALEEU ROBOTIC • DESAFIO 2026",
-              503,
+              "Departamento de Engenharia de Controle, Automação e Computação — ECA",
+              476,
               9.5,
               fontBold,
               cOrange,
@@ -522,8 +547,8 @@
 
             drawCentered(
               "CERTIFICADO DE PARTICIPAÇÃO",
-              446,
-              27,
+              436,
+              26,
               fontBold,
               cNavyDark,
             );
@@ -531,47 +556,47 @@
             const eventBarWidth = 420;
             page.drawRectangle({
               x: (width - eventBarWidth) / 2,
-              y: 418,
+              y: 408,
               width: eventBarWidth,
               height: 20,
               color: cNavyDark,
             });
-            drawCentered("VALEEU ROBOTICS 2026", 423, 11.5, fontBold, cYellow);
+            drawCentered("VALE EUROBOTIC 2026", 413, 11.5, fontBold, cYellow);
 
             drawCentered(
               "Certificamos para os devidos fins legais e acadêmicos que",
-              374,
+              368,
               12.5,
               fontItalic,
               cTextMuted,
             );
 
             const nome = dados.nome.toUpperCase();
-            drawCentered(nome, 332, 22, fontBold, cNavyDark);
+            drawCentered(nome, 326, 22, fontBold, cNavyDark);
 
             const nomeW = fontBold.widthOfTextAtSize(nome, 22);
             const lineW = Math.max(nomeW + 50, 360);
             page.drawLine({
-              start: { x: (width - lineW) / 2, y: 323 },
-              end: { x: (width + lineW) / 2, y: 323 },
+              start: { x: (width - lineW) / 2, y: 317 },
+              end: { x: (width + lineW) / 2, y: 317 },
               thickness: 1.5,
               color: cOrange,
             });
 
             const l1 = `portador(a) do CPF nº ${dados.cpf} e Matrícula Acadêmica nº ${dados.matricula},`;
             const l2 =
-              "participou com êxito das bancas avaliativas e atividades da Grande Final do Desafio";
+              "participou com êxito das bancas avaliativas de categoria pública e atividades da Grande Final do Desafio";
             const l3 =
-              "Valeeu Robotics 2026, realizado nas dependências da Quadra da UFSC Blumenau em 06 de novembro de 2026.";
+              "Vale Eurobotic 2026, realizado nas dependências da Quadra da UFSC Blumenau em 06 de novembro de 2026.";
 
-            drawCentered(l1, 288, 11.5, fontRegular, cTextDark);
-            drawCentered(l2, 270, 11.5, fontRegular, cTextDark);
-            drawCentered(l3, 252, 11.5, fontRegular, cTextDark);
+            drawCentered(l1, 284, 11.5, fontRegular, cTextDark);
+            drawCentered(l2, 266, 11.5, fontRegular, cTextDark);
+            drawCentered(l3, 248, 11.5, fontRegular, cTextDark);
 
             const badgeW = 260;
             page.drawRectangle({
               x: (width - badgeW) / 2,
-              y: 208,
+              y: 204,
               width: badgeW,
               height: 24,
               color: PDFLib.rgb(0.92, 0.94, 0.97),
@@ -579,62 +604,26 @@
               borderWidth: 1,
             });
             drawCentered(
-              "CARGA HORÁRIA CERTIFICADA: 4 HORAS",
-              215,
+              "CARGA HORÁRIA CERTIFICADA: 3 HORAS",
+              211,
               9.5,
               fontBold,
               cNavyDark,
             );
 
-            const sigY = 126;
-            const colLeft = 220;
-            const colRight = width - 220;
-
+            const sigY = 124;
+            const sigLineW = 250;
             page.drawLine({
-              start: { x: colLeft - 105, y: sigY },
-              end: { x: colLeft + 105, y: sigY },
+              start: { x: (width - sigLineW) / 2, y: sigY },
+              end: { x: (width + sigLineW) / 2, y: sigY },
               thickness: 1,
               color: cTextMuted,
             });
-            const ass1 = "Comissão Organizadora";
-            const sub1 = "Valeeu Robotics — UFSC Blumenau";
-            page.drawText(ass1, {
-              x: colLeft - fontBold.widthOfTextAtSize(ass1, 9.5) / 2,
-              y: sigY - 14,
-              size: 9.5,
-              font: fontBold,
-              color: cTextDark,
-            });
-            page.drawText(sub1, {
-              x: colLeft - fontRegular.widthOfTextAtSize(sub1, 8) / 2,
-              y: sigY - 26,
-              size: 8,
-              font: fontRegular,
-              color: cTextMuted,
-            });
 
-            page.drawLine({
-              start: { x: colRight - 105, y: sigY },
-              end: { x: colRight + 105, y: sigY },
-              thickness: 1,
-              color: cTextMuted,
-            });
-            const ass2 = "Coordenação Técnica do Evento";
-            const sub2 = "Valeeu Robotics 2026";
-            page.drawText(ass2, {
-              x: colRight - fontBold.widthOfTextAtSize(ass2, 9.5) / 2,
-              y: sigY - 14,
-              size: 9.5,
-              font: fontBold,
-              color: cTextDark,
-            });
-            page.drawText(sub2, {
-              x: colRight - fontRegular.widthOfTextAtSize(sub2, 8) / 2,
-              y: sigY - 26,
-              size: 8,
-              font: fontRegular,
-              color: cTextMuted,
-            });
+            const ass = "Coordenação Técnica do Evento";
+            const sub = "Vale Eurobotic 2026";
+            drawCentered(ass, sigY - 14, 9.5, fontBold, cTextDark);
+            drawCentered(sub, sigY - 26, 8, fontRegular, cTextMuted);
 
             page.drawRectangle({
               x: 33,
@@ -645,12 +634,12 @@
             });
 
             const empText =
-              "EMPRESAS PARTICIPANTES E APOIADORES: WEG • BOSCH REXROTH • SELGRON • NEXT • PROVOLT • GELÁSIO";
-            const twEmp = fontBold.widthOfTextAtSize(empText, 7.5);
+              "EMPRESAS PARTICIPANTES E APOIADORES: WEG • BOSCH REXROTH • SELGRON • NETZSCH • ALTONA • SEBRAE • SICOOB • PROVOLT • GELÁSIO";
+            const twEmp = fontBold.widthOfTextAtSize(empText, 7.2);
             page.drawText(empText, {
               x: (width - twEmp) / 2,
               y: 53,
-              size: 7.5,
+              size: 7.2,
               font: fontBold,
               color: cYellow,
             });
@@ -675,7 +664,7 @@
             const blob = new Blob([pdfBytes], { type: "application/pdf" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `Certificado_Valeeu_Robotics_${dados.nome.replace(/\s+/g, "_")}.pdf`;
+            link.download = `Certificado_Vale_Eurobotic_${dados.nome.replace(/\s+/g, "_")}.pdf`;
             document.body.appendChild(link);
             link.click();
             link.remove();
